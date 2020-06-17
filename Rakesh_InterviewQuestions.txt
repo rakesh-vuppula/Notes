@@ -10,11 +10,12 @@
 10. Design patterns? how many you know? explain breifly?
 11. Diamond problem?
 12. A -> B&C is in library and B&C are not virtually derived. How outside class D will use A methods without abmigious?
-13. 
+13. What is copy elision?
+14. What happens in below cases.
+	itr = somevector.begin();
+	itr--;
+	
+	itr = somevector.end()
+	itr++;
 
-
-
-- What happens if I do itr-- on first element of vector. 
- and If itr == vectot.end() and do itr++;
-
-- 
+15.
