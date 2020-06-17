@@ -1,0 +1,20 @@
+1. What happens if I return Unique pointer?
+2. auto_ptr vs shared_ptr?
+3. what will happen if shared_ptr is created using raw pointer and later deleted?
+4. difference between static_cast and ()?
+5. A -> B&C -> D Dimond problem? what will be the order of construction of classes?
+6. SOLID principles?
+7. map, un ordered map and multimap? time complexity?
+8. Why threads? Synchronisation ? deadlock ? data race?
+9. what's new learnt in c++?
+10. Design patterns? how many you know? explain breifly?
+11. Diamond problem?
+12. A -> B&C is in library and B&C are not virtually derived. How outside class D will use A methods without abmigious?
+13. 
+
+
+
+- What happens if I do itr-- on first element of vector. 
+ and If itr == vectot.end() and do itr++;
+
+- 
