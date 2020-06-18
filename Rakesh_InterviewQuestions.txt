@@ -18,4 +18,19 @@
 	itr = somevector.end()
 	itr++;
 
-15.
+15. When do you use Lambda function?
+
+16. What will be the value of x in each case?
+auto incr1(int& a) {return ++a;}
+auto incr2(int& a) {return a++;}
+decltype(auto) incr4(int& a) {return ++a;}
+
+int y = 10;
+int& x = incr1(y);
+int& x = incr2(y);
+int& x = incr4(y);
+
+16. How to represent binary number ( ex: 1010 1110 to int var)?
+
+17. what is deprecated attribute?
+18. What is Generic Lambda ?
