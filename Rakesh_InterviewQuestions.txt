@@ -34,3 +34,59 @@ int& x = incr4(y);
 
 17. what is deprecated attribute?
 18. What is Generic Lambda ?
+
+19. Little Endian and Big Endian?
+20. Static and Dynamic linkage?
+21. covariant return types...!
+
+class Base
+{
+public:
+    // This version of GetThis() returns a pointer to a Base class
+    virtual Base* GetThis() { return this; }
+};
+ 
+class Derived: public Base
+{
+    // Normally override functions have to return objects of the same type as the base function
+    // However, because Derived is derived from Base, it's okay to return Derived* instead of Base*
+    virtual Derived* GetThis() { return this; }
+};
+Note that some older compilers (eg. Visual Studio 6) do not support covariant return types.
+
+22. what is Koening lookup ?
+23. Variable argument list example..
+24. What is placement new ?
+
+#include <stdio.h>
+#include <stdarg.h>
+
+double average(int num,...) {
+
+   va_list valist;
+   double sum = 0.0;
+   int i;
+
+   /* initialize valist for num number of arguments */
+   va_start(valist, num);
+
+   /* access all the arguments assigned to valist */
+   for (i = 0; i < num; i++) {
+      sum += va_arg(valist, int);
+   }
+	
+   /* clean memory reserved for valist */
+   va_end(valist);
+
+   return sum/num;
+}
+
+int main() {
+   printf("Average of 2, 3, 4, 5 = %f\n", average(4, 2,3,4,5));
+   printf("Average of 5, 10, 15 = %f\n", average(3, 5,10,15));
+}
+
+24. How to allocate memory to N-D array and how to pass/return to/from function?
+25. How new and delete will work?
+26. write overrloadin new and delete operators?
+27. Deep Copy vs shallow copy?
