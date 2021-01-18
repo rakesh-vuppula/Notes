@@ -1,20 +1,20 @@
 **1. what is encapsulation ? what is abstraction ?.**
-
+```
 ***Abstraction*** is the method of hiding the unwanted information.In abstraction, problems are solved at the design or interface level.	
 ***Encapsulation*** is a method to hide the data in a single entity or unit along with a method to protect information from outside. In encapsulation, problems are solved at the implementation level. It can be implemented using by access modifier i.e. private, protected and public.
-
+```
 **2. What happens if I return Unique pointer?.**
-
+```
 If a function returns a std::unique_ptr<> , that means the caller takes ownership of the returned object. 
 Usage of std::move() while returning an object is only needed if the return type of the function differs from the type of the local variable.
 std::unique_ptr doesnt have copy constructor.
-
+```
 **3. auto_ptr vs shared_ptr?.**
 
 **4. what will happen if shared_ptr is created using raw pointer and later deleted?.**
-
+```
 Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer should never be deleted explicitly. Or custom deletor can be used in shared_ptr to avoid double deallocation.
-
+```
 5. difference between static_cast and Implicit conversion () ?
 6. A -> B&C -> D Dimond problem? what will be the order of construction of classes?
 7. map, un ordered map and multimap? time complexity?
@@ -377,20 +377,30 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
 	
 55. If we try to use memory beyond allocated in placement new.. what will happen?
 	
-56. New vs Malloc ?
+**56. New vs Malloc ?.**
+```
+Whenever you use malloc() you must consider initialization and convertion of the return pointer to a proper type. 
+You will also have to consider if you got the number of bytes right for your use. There is no performance difference between malloc() and new when you take initialization into account.
+
+malloc() reports memory exhaustion by returning 0. new reports allocation and initialization errors by throwing exceptions.
+
+Objects created by new are destroyed by delete. Areas of memory allocated by malloc() are deallocated by free().
 
     | new                                           |      malloc               |
     |-----------------------------------------------|:-------------------------:|
     | is an operator                                |  function                 |
     | return pointer of exact data type             |    returns void *         |
     | calls constructor                             | cannot call constructor   |
-    | returns nullptr or throws bad_alloc exception | return null               |
+    | returns nullptr or throws bad_alloc exception | return null / 0              |
     | can be overriden                              | cannot be overrriden      |
-    | size is calculated at compile time            | size calculated manually  |
-
+    | size is calculated at compile time            | size to be provided by user  |
+```
 57. delete vs free ?
-58. Can I delete null ptr? What will happen?
-59. What will happen on calling delete twice on same obj;
+**58. Can I delete null ptr? What will happen?**
+```
+No harm. standard checks whether pointer is nullptr before calling delete. It would be better to set it to nullptr after callilng delete. try to avoid using new and delete as much as possible. avois situations of double delete occurances.
+```
+**59. What will happen on calling delete twice on same obj;**
     ```
     Base* b = new Base;
     delete b; // deletes the data pointed by b. But b points to same location.
