@@ -1,7 +1,14 @@
-1. what is encapsulation ? what is abstraction ?
-2. What happens if I return Unique pointer?
-3. auto_ptr vs shared_ptr?
-4. what will happen if shared_ptr is created using raw pointer and later deleted?
+**1. what is encapsulation ? what is abstraction ?**
+***Abstraction*** is the method of hiding the unwanted information.In abstraction, problems are solved at the design or interface level.	
+***Encapsulation*** is a method to hide the data in a single entity or unit along with a method to protect information from outside. In encapsulation, problems are solved at the implementation level. It can be implemented using by access modifier i.e. private, protected and public.
+**2. What happens if I return Unique pointer?**
+If a function returns a std::unique_ptr<> , that means the caller takes ownership of the returned object. 
+Usage of std::move() while returning an object is only needed if the return type of the function differs from the type of the local variable.
+std::unique_ptr doesnt have copy constructor.
+
+**3. auto_ptr vs shared_ptr?**
+**4. what will happen if shared_ptr is created using raw pointer and later deleted?**
+Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer should never be deleted explicitly. Or custom deletor can be used in shared_ptr to avoid double deallocation.
 5. difference between static_cast and Implicit conversion () ?
 6. A -> B&C -> D Dimond problem? what will be the order of construction of classes?
 7. map, un ordered map and multimap? time complexity?
