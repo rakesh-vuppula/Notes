@@ -1,3 +1,8 @@
+**Good Links For C++**
+```
+https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
+https://www.stroustrup.com/bs_faq2.html
+```
 **1. what is encapsulation ? what is abstraction ?.**
 ```
 ***Abstraction*** is the method of hiding the unwanted information.In abstraction, problems are solved at the design or interface level.	
