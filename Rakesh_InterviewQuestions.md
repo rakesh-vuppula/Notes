@@ -20,14 +20,36 @@ std::unique_ptr doesnt have copy constructor.
 ```
 Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer should never be deleted explicitly. Or custom deletor can be used in shared_ptr to avoid double deallocation.
 ```
-5. difference between static_cast and Implicit conversion () ?
-6. A -> B&C -> D Dimond problem? what will be the order of construction of classes?
+**5. difference between static_cast and Implicit conversion () ?**
+```
+https://stackoverflow.com/questions/28002/regular-cast-vs-static-cast-vs-dynamic-cast
+```
+**6. A -> B&C -> D Dimond problem? what will be the order of construction of classes?**
+```
+if virtual is not defined during inheritance, there will be 2 copies of A. hence there will be ambigiuity when D tries to use A methods or variables.
+
+if A is derived as Virtual in one of the B or C, problem remians with non virtual inheritance.
+Hence both B&C should inherit D as virtual.
+
+class B: virtual public A {}
+class D: public B => Means that any class inherited from B is now responsible for creating A by itself, since B isn't going to do it automatically.
+D directly invokes default constructore. if there is a need for parameterized constructor for A, then D need to explcitly call it.
+
+https://stackoverflow.com/questions/2659116/how-does-virtual-inheritance-solve-the-diamond-multiple-inheritance-ambiguit
+```
 7. map, un ordered map and multimap? time complexity?
 8. Why threads? Synchronisation ? deadlock ? data race?
 9. What's new learnt in c++?
 10. Design patterns? how many you know? explain breifly?
 11. Diamond problem?
+```
+Refer to 6
+```
 12. Class B and C are derived from A is in library and B&C are not virtually derived. How outside class D will use A methods without abmigious?
+```
+Refer to 6
+Scope resolution to be used
+```
 13. What is copy elision?
 14. What happens in below cases.
     ```
