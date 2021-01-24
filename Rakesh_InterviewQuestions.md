@@ -548,11 +548,23 @@ https://isocpp.org/wiki/faq/freestore-mgmt#new-doesnt-leak-if-ctor-throws
 Exception in constructor is detailed in 64.
 Exception in destructor leads to undefined behavior and resource leaks.
 ```
-66. p = new Fred[n]; delete[] p;
+**66. p = new Fred[n]; delete[] p;
     How Compiler will know how many object to delete/destruct?
+```
+Long answer: The run-time system stores the number of objects, n, somewhere where it can be retrieved if you only know the pointer, p. There are two popular techniques that do this. Both these techniques are in use by commercial-grade compilers, both have tradeoffs, and neither is perfect. These techniques are:
+
+Over-allocate the array and put n just to the left of the first Fred object.
+Use an associative array with p as the key and n as the value.
+```
 67. How to allocate memory to multi dimentional array using new ?
-68. How to restrict an Object creation to be dynamic (using new only)?
-69. How to restrcit dynamic creation of Object?
+**68. How to restrict an Object creation to be dynamic (using new only)? => TBD
+```
+Ideally not possible. may be wrapper method or factory/singleton approach to create static objects and give to clients.
+```
+**69. How to restrcit dynamic creation of Object?
+```
+Keep new operator private.in new C++ term - maybe delete this method
+```
 70. Difference Between post increment and pre increment? Which one is efficient , why?
 71. Diff between struct and class?
 72. Can I declare private members of a struct?
@@ -577,7 +589,19 @@ Yes. default, parameterized constructor. Copy constructor
 > Its compile time error if you try to overload it.
 ```
 77. Can i call constructor /destructor explictly  ? if so how ?
-78. what is object slicing ?
+```
+Test()  -> creates temprorary object. constructor and destructor
+Test t;
+t.~Test();
+
+Once a destructor is invoked for an object, the object no longer exists; the behavior is undefined if the destructor is invoked for an object whose lifetime has ended [Example: if the destructor for an automatic object is explicitly invoked, and the block is subsequently left in a manner that would ordinarily invoke implicit destruction of the object, the behavior is undefined.
+```
+**78. what is object slicing ?
+```
+Object slicing happens when a derived class object is assigned to a base class object, additional attributes of a derived class object are sliced off to form the base class object.
+
+It doesnt happen when pointers or refernces are used
+```
 79. initializer list ? is there any advantage of initalizer list ?
     - For initialization of non-static const data members:
     - For initialization of reference members:
@@ -594,7 +618,7 @@ to avoid continuous invokation of copy constructor in infinite loop. compiler do
 3) pass an object as function argument as pass by value
 4) when compiler creates temporary objects
 
-Reference has to be const to avoid "copy elisions: in scenario(4) mentioned above. Compiler gives an error in this case.
+Reference has to be const to avoid "copy elision" in scenario(4) mentioned above. Compiler gives an error in this case.
 The reason for compiler error is, compiler created temporary objects cannot be bound to non-const references and the original program tries to do that. 
 It doesn’t make sense to modify compiler created temporary objects as they can die any moment.
 ```
