@@ -532,10 +532,22 @@ No harm. standard checks whether pointer is nullptr before calling delete. It wo
 61. Write code to pass variable arguments to function.
 62. Can I realloc memory allocated using new?
     > No.. https://isocpp.org/wiki/faq/freestore-mgmt#renew
-63. Do wee need to check against null after calling new? 
-64. In p = new Fred(); does the Fred memory “leak” if the Fred constructor throws an exception?
-    > No.. https://isocpp.org/wiki/faq/freestore-mgmt#new-doesnt-leak-if-ctor-throws
-65. Exception i Constructor or destructor ? **
+**63. Do wee need to check against null after calling new?**
+```
+No, new throws std::bad_alloc on allocation failure. Use new(std::nothrow) Car instead if you don't want exceptions.
+```
+**64. In p = new Fred(); does the Fred memory “leak” if the Fred constructor throws an exception?**
+```
+No.. 
+If an exception occurs during the Fred constructor of p = new Fred(), the C++ language guarantees that the memory sizeof(Fred) bytes that were allocated will automagically be released back to the heap.
+
+https://isocpp.org/wiki/faq/freestore-mgmt#new-doesnt-leak-if-ctor-throws
+```
+**65. Exception in Constructor or destructor ?**
+```
+Exception in constructor is detailed in 64.
+Exception in destructor leads to undefined behavior and resource leaks.
+```
 66. p = new Fred[n]; delete[] p;
     How Compiler will know how many object to delete/destruct?
 67. How to allocate memory to multi dimentional array using new ?
@@ -545,19 +557,25 @@ No harm. standard checks whether pointer is nullptr before calling delete. It wo
 71. Diff between struct and class?
 72. Can I declare private members of a struct?
 73. What are friend classes and functions, when to use them?
-74. Overloading vs. overriding ?
-
+**74. Overloading vs. overriding ?
+```
     - Overriding of functions occurs when one class is inherited from another class. Overloading can occur without inheritance.
     - Overloaded functions must differ in function signature ie either number of parameters or type of parameters should differ. 
         In overriding, function signatures must be same.
     - Overridden functions are in different scopes; whereas overloaded functions are in same scope.
     - Overriding is needed when derived class function has to do some added or different job than the base class function.
     - Overloading is used to have same name functions which behave differently depending upon parameters passed to them.
-75. can constructor be overload?
-76. can destructor be overload ?
-    > The reason why you can't overload a destructor is because your code wouldn't have a clue about which destructor it needs to call when you destroy an object.
-    > Unless you're calling destructors badly but then you're behaving badly! ;-) You can't! Each class can only have one destructor.\
-    > Its compile time error if you try to overload it.
+```
+**75. can constructor be overload?
+```
+Yes. default, parameterized constructor. Copy constructor
+```
+**76. can destructor be overload ?
+```
+> The reason why you can't overload a destructor is because your code wouldn't have a clue about which destructor it needs to call when you destroy an object.
+> Unless you're calling destructors badly but then you're behaving badly! ;-) You can't! Each class can only have one destructor.\
+> Its compile time error if you try to overload it.
+```
 77. Can i call constructor /destructor explictly  ? if so how ?
 78. what is object slicing ?
 79. initializer list ? is there any advantage of initalizer list ?
@@ -567,8 +585,19 @@ No harm. standard checks whether pointer is nullptr before calling delete. It wo
     - For initialization of base class members :
     - When constructor’s parameter name is same as data member
     - For Performance reasons
-80. Why Const reference is used in Copy constructor?
-81. when all the copy constructor called ?
+**80. Why Const reference is used in Copy constructor?
+**81. when all the copy constructor called ?
+```
+to avoid continuous invokation of copy constructor in infinite loop. compiler doesnt allow this.
+1) creates an obect from exisiting
+2) return an object from a function
+3) pass an object as function argument as pass by value
+4) when compiler creates temporary objects
+
+Reference has to be const to avoid "copy elisions: in scenario(4) mentioned above. Compiler gives an error in this case.
+The reason for compiler error is, compiler created temporary objects cannot be bound to non-const references and the original program tries to do that. 
+It doesn’t make sense to modify compiler created temporary objects as they can die any moment.
+```
 82. can i delete this pointer in a destructor?
 83. virtual base classes ? what does it mean ?
 84. function pointers ? what's the advantage of function pointers ?
