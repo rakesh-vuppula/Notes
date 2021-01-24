@@ -15,6 +15,11 @@ Usage of std::move() while returning an object is only needed if the return type
 std::unique_ptr doesnt have copy constructor.
 ```
 **3. auto_ptr vs shared_ptr?.**
+```
+A shared_ptr is a container for raw pointers. It is a reference counting ownership model i.e. it maintains the reference count of its contained pointer in cooperation with all copies of the shared_ptr.
+
+Use unique_ptr when you want to have single ownership(Exclusive) of the resource. Only one unique_ptr can point to one resource. Since there can be one unique_ptr for single resource its not possible to copy one unique_ptr to another.
+```
 
 **4. what will happen if shared_ptr is created using raw pointer and later deleted?.**
 ```
@@ -51,7 +56,22 @@ Refer to 6
 Scope resolution to be used
 ```
 13. What is copy elision?
-14. What happens in below cases.
+```
+Copy elision is a compiler optimization technique that eliminates unnecessary copying/moving of objects.
+In the following circumstances, a compiler is allowed to omit copy/move operations and hence not to call the associated constructor:
+
+NRVO (Named Return Value Optimization): If a function returns a class type by value and the return statement's expression is the name of a non-volatile object with automatic storage duration (which isn't a function parameter), then the copy/move that would be performed by a non-optimising compiler can be omitted. If so, the returned value is constructed directly in the storage to which the function's return value would otherwise be moved or copied.
+RVO (Return Value Optimization): If the function returns a nameless temporary object that would be moved or copied into the destination by a naive compiler, the copy or move can be omitted as per 1.
+
+Summary:
+With each copy elision, one construction and one matching destruction of the copy are omitted, thus saving CPU time, and one object is not created, thus saving space on the stack frame.
+
+GCC provides the -fno-elide-constructors option to disable copy elision. If you want to avoid possible copy elision, use -fno-elide-constructors.
+
+Now almost all compilers provide copy elision when optimisation is enabled (and if no other option is set to disable it).
+
+```
+**14. What happens in below cases.**
     ```
 	itr = somevector.begin();
 	itr--;
@@ -59,9 +79,14 @@ Scope resolution to be used
 	itr = somevector.end()
 	itr++;
     ```
+```
+    Answer:
+    Operation is performed on pointer. arithametic will be performed as expected.
+    undefined behavior will be noticed when we try to access the data located at the index to which iterator is pointing to.
+```
 
-16. When do you use Lambda function?
-17. What will be the value of x in each case?
+**16. When do you use Lambda function?**
+**17. What will be the value of x in each case?**  => TBD
     ```cpp
     auto incr1(int& a) {return ++a;}
     auto incr2(int& a) {return a++;}
@@ -78,9 +103,48 @@ Scope resolution to be used
 19. what is deprecated attribute?
 20. What is Generic Lambda ?
 
-21. Little Endian and Big Endian?
-22. Static and Dynamic linkage?
-23. covariant return types...!
+**21. Little Endian and Big Endian?**
+```
+Runtime - 
+bool isLilEndian()
+{
+uint32_t value=0x0001;
+uint8_t *c = reinterpret_cast<uint8_t*>(&value);
+return *c == 0x01;
+}
+```
+```
+To determine at compile time -
+
+union {
+  uint16_t s;
+  uint8_t c[2];
+} constexpr static  d {1};
+
+constexpr bool isLilEndian()
+{
+  return d.c[0] == 1;
+}
+
+This is not legal in constexpr context. You can't access a member of a union that has not been initialised directly. 
+There is no way to legally detect endianness at compile time without preprocessor magic.
+```
+```
+#define __LITTLE_ENDIAN__ 1
+Preprocessor magics defined for some particular compilers/versions shall be used. but this is determined at preprocessing time (even before compile time)
+```
+```
+Docker => How about using compile time approach in docker? We shall use the logic that deduces at runtime.
+```
+**22. Static and Dynamic linkage?**
+```
+static library - code is built as a part of the executable
+dynamic library - code is built separately. position independent code is used to link libraries. It is linked at run time.
+
+When provided by different team (or) needs to be linked on the the basis of a feature -> then choose for it.
+Load this lib only for that feature/region/customer etc..
+```
+**23. covariant return types...!** => TBD
     ```cpp
     class Base
     {
@@ -162,17 +226,29 @@ Scope resolution to be used
 34. what is the value of vptr in case of an Interface class and abstract class?
 35. when do you use volatile keyword?
 36. Time and Space complexity of different container and operations? **
-37. Can inline functions be virtual?
-38. inline vs Macro
-    ```
-    Macros are error prone
+**37. Can inline functions be virtual?**
+```
+Inlined declared Virtual functions are inlined when called through objects and ignored when called via pointer or references.
+When objects are created for direct objects and where resolving virtual is not required, then compiler considers for inlining.
+```
+**38. inline vs Macro**
+```
+Inline copies the function to the location of the function call in compile-time and may make the program execution faster.
+inline returnType functionName(parameters) { // code }
+```
+```
+    Macros are error prone. no type checking.
         #define DOUBLE(X) X*X
         int y = 3;
         int j = DOUBLE(++y); // expecting 16 but would get 25.
-    ```
-39. Can a constructor be inline?
-40. Can I overload function of Base in derived?
-    ```cpp
+```
+**39. Can a constructor be inline?**
+```
+The short answer is yes. Any function can be declared inline, and putting the function body in the class definition is one way of doing that. You could also have done:
+However, it's up to the compiler if it actually does inline the function.
+```
+**40. Can I overload function of Base in derived?**
+```
     class Base {
     public:
         virtual void fun() { cout << "Base Fun"<<endl; }
@@ -197,9 +273,18 @@ Scope resolution to be used
         d.display(1234);
         d.display();
     }
-    ```
+```
+```
+    Answer:
+    Its called Name Hiding. Compiler throws an error "no matching function call"
+    When you define a non virtual method with the same name as Base method it hides the Base class method in Derived class. 
+    When you invoke base class method in derived, it throws error. 
+    
+    function overloading is expected to happen in a single class where in overriding is expected to happen in inheritance hirarchy.
+    To avoid hiding of Base class methods in Derived class use using keyword as you did in Derived2 class.
+```
   
-41. How to solve problem in above code?
+**41. How to solve problem in above code?**
     ```cpp
     //Modify derived class as below.
 	class Derived: public Base {
@@ -212,9 +297,15 @@ Scope resolution to be used
 			}
 		};
     ```
-39. Can I call a virtual method from constructor ?
-  
-40. Size of an empty class?
+**39. Can I call a virtual method from constructor ?**
+```
+Yes. but you may experience unintended behavior.
+The reason is that C++ objects are constructed like onions, from the inside out. Base classes are constructed before derived classes. So, before a B can be made, an A must be made. When A's constructor is called, it's not a B yet, so the virtual function table still has the entry for A's copy of fn().
+```
+**40. Size of an empty class?**
+```
+Size of an empty class is not zero. It is 1 byte generally. It is nonzero to ensure that the two different objects will have different addresses.
+```
 41. Can I through exception in Constructor? Explain in details? **
 42. How to Reduce or avoid padding bits?
     ```cpp 
