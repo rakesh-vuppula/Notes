@@ -86,8 +86,9 @@ Now almost all compilers provide copy elision when optimisation is enabled (and 
 ```
 
 **16. When do you use Lambda function?**
+
 **17. What will be the value of x in each case?**  => TBD
-    ```cpp
+```cpp
     auto incr1(int& a) {return ++a;}
     auto incr2(int& a) {return a++;}
     decltype(auto) incr4(int& a) {return ++a;}
@@ -96,7 +97,7 @@ Now almost all compilers provide copy elision when optimisation is enabled (and 
     int& x = incr1(y);
     int& x = incr2(y);
     int& x = incr4(y);
-    ```
+```
 
 18. How to represent binary number ( ex: 1010 1110 to int var)?
 
@@ -145,7 +146,7 @@ When provided by different team (or) needs to be linked on the the basis of a fe
 Load this lib only for that feature/region/customer etc..
 ```
 **23. covariant return types...!** => TBD
-    ```cpp
+```cpp
     class Base
     {
     public:
@@ -160,7 +161,7 @@ Load this lib only for that feature/region/customer etc..
         virtual Derived* GetThis() { return this; }
     };
     //Note that some older compilers (eg. Visual Studio 6) do not support covariant return types.
-    ```
+```
 
 24. what is Koening lookup ?
 25. Variable argument list example.. ?
