@@ -526,9 +526,11 @@ No harm. standard checks whether pointer is nullptr before calling delete. It wo
     ```
 
 60. Can we mix new[] and delete? what will happen?
+```
     > Segmentation fault. Only destructor of first object will be called.
     > If new and delete[] is mixed behaviour is unknown. free(): invalid pointer; Crash.
     > Tries to delete invalid objects.
+```
 61. Write code to pass variable arguments to function.
 62. Can I realloc memory allocated using new?
     > No.. https://isocpp.org/wiki/faq/freestore-mgmt#renew
@@ -669,6 +671,157 @@ It doesn’t make sense to modify compiler created temporary objects as they can
                   Overload dereference \
                   Overload indirection operators?
     (how to overload new[] operator ?)
+```
+class Count
+// return Count when ++ used as prefix
+
+Count operator ++ () {
+    // code
+}
+
+// return Count when ++ used as postfix
+
+Count operator ++ (int) {
+   // code
+}
+```
+```
+    // Overload the + operator
+    Complex operator + (const Complex& obj) {
+        Complex temp;
+        temp.real = real + obj.real;
+        temp.imag = imag + obj.imag;
+        return temp;
+    }
+```
+    void * operator new(size_t size) 
+    { 
+        cout<< "Overloading new operator with size: " << size << endl; 
+        void * p = ::new student();  
+        //void * p = malloc(size); will also work fine 
+      
+        return p; 
+    } 
+  
+    void operator delete(void * p) 
+    { 
+        cout<< "Overloading delete operator " << endl; 
+        free(p); 
+    } 
+  
+```
+```
+void *YourClass::operator new(size_t size)
+{
+    void *p;
+    cout << "In overloaded new.";
+    p =  malloc(size);
+    if(!p) 
+    {
+        throw std::bad_alloc;  //Throw directly than with named temp variable
+    }
+    return p;
+}
+
+void YourClass::operator delete(void *p)
+{
+    cout << "In overloaded delete.\n";
+    free(p);
+}
+
+void *YourClass::operator new[](size_t size)
+{
+    void *p;
+    cout << "Using overload new[].\n";
+    p =  malloc(size);
+    if(!p) 
+    {
+        throw std::bad_alloc;
+    }
+    return p;
+}
+
+void YourClass::operator delete[](void *p)
+{
+    cout << "Free array using overloaded delete[]\n";
+    free(p);
+}
+```
+```
+int& IntList::operator[] (int index) // for non-const objects: can be used for assignment
+{
+    return m_list[index];
+}
+ 
+const int& IntList::operator[] (int index) const // for const objects: can only be used for access
+{
+    return m_list[index];
+}
+```
+```
+template<class T>
+class MyClass
+{
+    T* ptr;
+
+public:
+    T* operator->() {
+        return ptr;
+    }
+
+    // const version, returns a pointer-to-const instead of just a pointer to
+    // enforce the idea of the logical constness of this object 
+    const T* operator->() const {
+        return ptr;
+    }
+
+    T& operator*() {
+        return *ptr;
+    }
+
+    // const version, returns a const reference instead of just a reference
+    // to enforce the idea of the logical constness of this object
+    const T& operator*() const {
+        return *ptr;
+    }
+};
+```
+```
+For example,
+
+class Person{
+        string name;
+    public:
+        T& operator*(){
+            return name;
+        }
+}
+
+You need an object of the class rather than the pointer to class object to invoke the overloaded * operator.
+
+Person *ptr = new Person;
+Person p1 = *ptr;   // does not invoke * operator but returns the object pointed by ptr
+string str = *p1 // invokes the overloaded operator as it is called on an object.
+
+```
+If defined inside a class -> class scope
+if defined outside -> impacts whole program. overloads global new. which in turn is used by STL's etc
+
+    void * operator new(size_t size) 
+    { 
+        cout<< "Overloading new operator with size: " << size << endl; 
+        void * p = ::new student();  
+        //void * p = malloc(size); will also work fine 
+      
+        return p; 
+    } 
+  
+    void operator delete(void * p) 
+    { 
+        cout<< "Overloading delete operator " << endl; 
+        free(p); 
+    } 
+```
 114. Implement your own Iterator?
 115. how to delete array of objects / pointers ?
 116. What will be the output? What do you do when it crashes? How do you debug?
