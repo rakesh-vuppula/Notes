@@ -685,6 +685,7 @@ Count operator ++ (int) {
    // code
 }
 ```
+
 ```
     // Overload the + operator
     Complex operator + (const Complex& obj) {
@@ -693,6 +694,8 @@ Count operator ++ (int) {
         temp.imag = imag + obj.imag;
         return temp;
     }
+```
+
 ```
     void * operator new(size_t size) 
     { 
@@ -710,6 +713,7 @@ Count operator ++ (int) {
     } 
   
 ```
+
 ```
 void *YourClass::operator new(size_t size)
 {
@@ -747,6 +751,7 @@ void YourClass::operator delete[](void *p)
     free(p);
 }
 ```
+
 ```
 int& IntList::operator[] (int index) // for non-const objects: can be used for assignment
 {
@@ -758,6 +763,7 @@ const int& IntList::operator[] (int index) const // for const objects: can only 
     return m_list[index];
 }
 ```
+
 ```
 template<class T>
 class MyClass
@@ -786,6 +792,7 @@ public:
     }
 };
 ```
+
 ```
 For example,
 
@@ -802,6 +809,8 @@ You need an object of the class rather than the pointer to class object to invok
 Person *ptr = new Person;
 Person p1 = *ptr;   // does not invoke * operator but returns the object pointed by ptr
 string str = *p1 // invokes the overloaded operator as it is called on an object.
+
+```
 
 ```
 If defined inside a class -> class scope
@@ -822,6 +831,7 @@ if defined outside -> impacts whole program. overloads global new. which in turn
         free(p); 
     } 
 ```
+
 114. Implement your own Iterator?
 115. how to delete array of objects / pointers ?
 116. What will be the output? What do you do when it crashes? How do you debug?
