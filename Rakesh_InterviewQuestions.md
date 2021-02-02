@@ -1,24 +1,77 @@
-**1. what is encapsulation ? what is abstraction ?**
+**Good Links For C++**
+```
+https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
+https://www.stroustrup.com/bs_faq2.html
+```
+**1. what is encapsulation ? what is abstraction ?.**
+```
 ***Abstraction*** is the method of hiding the unwanted information.In abstraction, problems are solved at the design or interface level.	
 ***Encapsulation*** is a method to hide the data in a single entity or unit along with a method to protect information from outside. In encapsulation, problems are solved at the implementation level. It can be implemented using by access modifier i.e. private, protected and public.
-**2. What happens if I return Unique pointer?**
+```
+**2. What happens if I return Unique pointer?.**
+```
 If a function returns a std::unique_ptr<> , that means the caller takes ownership of the returned object. 
 Usage of std::move() while returning an object is only needed if the return type of the function differs from the type of the local variable.
 std::unique_ptr doesnt have copy constructor.
+```
+**3. auto_ptr vs shared_ptr?.**
+```
+A shared_ptr is a container for raw pointers. It is a reference counting ownership model i.e. it maintains the reference count of its contained pointer in cooperation with all copies of the shared_ptr.
 
-**3. auto_ptr vs shared_ptr?**
-**4. what will happen if shared_ptr is created using raw pointer and later deleted?**
+Use unique_ptr when you want to have single ownership(Exclusive) of the resource. Only one unique_ptr can point to one resource. Since there can be one unique_ptr for single resource its not possible to copy one unique_ptr to another.
+```
+
+**4. what will happen if shared_ptr is created using raw pointer and later deleted?.**
+```
 Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer should never be deleted explicitly. Or custom deletor can be used in shared_ptr to avoid double deallocation.
-5. difference between static_cast and Implicit conversion () ?
-6. A -> B&C -> D Dimond problem? what will be the order of construction of classes?
+```
+**5. difference between static_cast and Implicit conversion () ?**
+```
+https://stackoverflow.com/questions/28002/regular-cast-vs-static-cast-vs-dynamic-cast
+```
+**6. A -> B&C -> D Dimond problem? what will be the order of construction of classes?**
+```
+if virtual is not defined during inheritance, there will be 2 copies of A. hence there will be ambigiuity when D tries to use A methods or variables.
+
+if A is derived as Virtual in one of the B or C, problem remians with non virtual inheritance.
+Hence both B&C should inherit D as virtual.
+
+class B: virtual public A {}
+class D: public B => Means that any class inherited from B is now responsible for creating A by itself, since B isn't going to do it automatically.
+D directly invokes default constructore. if there is a need for parameterized constructor for A, then D need to explcitly call it.
+
+https://stackoverflow.com/questions/2659116/how-does-virtual-inheritance-solve-the-diamond-multiple-inheritance-ambiguit
+```
 7. map, un ordered map and multimap? time complexity?
 8. Why threads? Synchronisation ? deadlock ? data race?
 9. What's new learnt in c++?
 10. Design patterns? how many you know? explain breifly?
 11. Diamond problem?
+```
+Refer to 6
+```
 12. Class B and C are derived from A is in library and B&C are not virtually derived. How outside class D will use A methods without abmigious?
+```
+Refer to 6
+Scope resolution to be used
+```
 13. What is copy elision?
-14. What happens in below cases.
+```
+Copy elision is a compiler optimization technique that eliminates unnecessary copying/moving of objects.
+In the following circumstances, a compiler is allowed to omit copy/move operations and hence not to call the associated constructor:
+
+NRVO (Named Return Value Optimization): If a function returns a class type by value and the return statement's expression is the name of a non-volatile object with automatic storage duration (which isn't a function parameter), then the copy/move that would be performed by a non-optimising compiler can be omitted. If so, the returned value is constructed directly in the storage to which the function's return value would otherwise be moved or copied.
+RVO (Return Value Optimization): If the function returns a nameless temporary object that would be moved or copied into the destination by a naive compiler, the copy or move can be omitted as per 1.
+
+Summary:
+With each copy elision, one construction and one matching destruction of the copy are omitted, thus saving CPU time, and one object is not created, thus saving space on the stack frame.
+
+GCC provides the -fno-elide-constructors option to disable copy elision. If you want to avoid possible copy elision, use -fno-elide-constructors.
+
+Now almost all compilers provide copy elision when optimisation is enabled (and if no other option is set to disable it).
+
+```
+**14. What happens in below cases.**
     ```
 	itr = somevector.begin();
 	itr--;
@@ -26,10 +79,16 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
 	itr = somevector.end()
 	itr++;
     ```
+```
+    Answer:
+    Operation is performed on pointer. arithametic will be performed as expected.
+    undefined behavior will be noticed when we try to access the data located at the index to which iterator is pointing to.
+```
 
-16. When do you use Lambda function?
-17. What will be the value of x in each case?
-    ```cpp
+**16. When do you use Lambda function?**
+
+**17. What will be the value of x in each case?**  => TBD
+```cpp
     auto incr1(int& a) {return ++a;}
     auto incr2(int& a) {return a++;}
     decltype(auto) incr4(int& a) {return ++a;}
@@ -38,17 +97,56 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
     int& x = incr1(y);
     int& x = incr2(y);
     int& x = incr4(y);
-    ```
+```
 
 18. How to represent binary number ( ex: 1010 1110 to int var)?
 
 19. what is deprecated attribute?
 20. What is Generic Lambda ?
 
-21. Little Endian and Big Endian?
-22. Static and Dynamic linkage?
-23. covariant return types...!
-    ```cpp
+**21. Little Endian and Big Endian?**
+```
+Runtime - 
+bool isLilEndian()
+{
+uint32_t value=0x0001;
+uint8_t *c = reinterpret_cast<uint8_t*>(&value);
+return *c == 0x01;
+}
+```
+```
+To determine at compile time -
+
+union {
+  uint16_t s;
+  uint8_t c[2];
+} constexpr static  d {1};
+
+constexpr bool isLilEndian()
+{
+  return d.c[0] == 1;
+}
+
+This is not legal in constexpr context. You can't access a member of a union that has not been initialised directly. 
+There is no way to legally detect endianness at compile time without preprocessor magic.
+```
+```
+#define __LITTLE_ENDIAN__ 1
+Preprocessor magics defined for some particular compilers/versions shall be used. but this is determined at preprocessing time (even before compile time)
+```
+```
+Docker => How about using compile time approach in docker? We shall use the logic that deduces at runtime.
+```
+**22. Static and Dynamic linkage?**
+```
+static library - code is built as a part of the executable
+dynamic library - code is built separately. position independent code is used to link libraries. It is linked at run time.
+
+When provided by different team (or) needs to be linked on the the basis of a feature -> then choose for it.
+Load this lib only for that feature/region/customer etc..
+```
+**23. covariant return types...!** => TBD
+```cpp
     class Base
     {
     public:
@@ -63,7 +161,7 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
         virtual Derived* GetThis() { return this; }
     };
     //Note that some older compilers (eg. Visual Studio 6) do not support covariant return types.
-    ```
+```
 
 24. what is Koening lookup ?
 25. Variable argument list example.. ?
@@ -129,17 +227,29 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
 34. what is the value of vptr in case of an Interface class and abstract class?
 35. when do you use volatile keyword?
 36. Time and Space complexity of different container and operations? **
-37. Can inline functions be virtual?
-38. inline vs Macro
-    ```
-    Macros are error prone
+**37. Can inline functions be virtual?**
+```
+Inlined declared Virtual functions are inlined when called through objects and ignored when called via pointer or references.
+When objects are created for direct objects and where resolving virtual is not required, then compiler considers for inlining.
+```
+**38. inline vs Macro**
+```
+Inline copies the function to the location of the function call in compile-time and may make the program execution faster.
+inline returnType functionName(parameters) { // code }
+```
+```
+    Macros are error prone. no type checking.
         #define DOUBLE(X) X*X
         int y = 3;
         int j = DOUBLE(++y); // expecting 16 but would get 25.
-    ```
-39. Can a constructor be inline?
-40. Can I overload function of Base in derived?
-    ```cpp
+```
+**39. Can a constructor be inline?**
+```
+The short answer is yes. Any function can be declared inline, and putting the function body in the class definition is one way of doing that. You could also have done:
+However, it's up to the compiler if it actually does inline the function.
+```
+**40. Can I overload function of Base in derived?**
+```
     class Base {
     public:
         virtual void fun() { cout << "Base Fun"<<endl; }
@@ -164,9 +274,18 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
         d.display(1234);
         d.display();
     }
-    ```
+```
+```
+    Answer:
+    Its called Name Hiding. Compiler throws an error "no matching function call"
+    When you define a non virtual method with the same name as Base method it hides the Base class method in Derived class. 
+    When you invoke base class method in derived, it throws error. 
+    
+    function overloading is expected to happen in a single class where in overriding is expected to happen in inheritance hirarchy.
+    To avoid hiding of Base class methods in Derived class use using keyword as you did in Derived2 class.
+```
   
-41. How to solve problem in above code?
+**41. How to solve problem in above code?**
     ```cpp
     //Modify derived class as below.
 	class Derived: public Base {
@@ -179,9 +298,15 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
 			}
 		};
     ```
-39. Can I call a virtual method from constructor ?
-  
-40. Size of an empty class?
+**39. Can I call a virtual method from constructor ?**
+```
+Yes. but you may experience unintended behavior.
+The reason is that C++ objects are constructed like onions, from the inside out. Base classes are constructed before derived classes. So, before a B can be made, an A must be made. When A's constructor is called, it's not a B yet, so the virtual function table still has the entry for A's copy of fn().
+```
+**40. Size of an empty class?**
+```
+Size of an empty class is not zero. It is 1 byte generally. It is nonzero to ensure that the two different objects will have different addresses.
+```
 41. Can I through exception in Constructor? Explain in details? **
 42. How to Reduce or avoid padding bits?
     ```cpp 
@@ -371,20 +496,30 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
 	
 55. If we try to use memory beyond allocated in placement new.. what will happen?
 	
-56. New vs Malloc ?
+**56. New vs Malloc ?.**
+```
+Whenever you use malloc() you must consider initialization and convertion of the return pointer to a proper type. 
+You will also have to consider if you got the number of bytes right for your use. There is no performance difference between malloc() and new when you take initialization into account.
+
+malloc() reports memory exhaustion by returning 0. new reports allocation and initialization errors by throwing exceptions.
+
+Objects created by new are destroyed by delete. Areas of memory allocated by malloc() are deallocated by free().
 
     | new                                           |      malloc               |
     |-----------------------------------------------|:-------------------------:|
     | is an operator                                |  function                 |
     | return pointer of exact data type             |    returns void *         |
     | calls constructor                             | cannot call constructor   |
-    | returns nullptr or throws bad_alloc exception | return null               |
+    | returns nullptr or throws bad_alloc exception | return null / 0              |
     | can be overriden                              | cannot be overrriden      |
-    | size is calculated at compile time            | size calculated manually  |
-
+    | size is calculated at compile time            | size to be provided by user  |
+```
 57. delete vs free ?
-58. Can I delete null ptr? What will happen?
-59. What will happen on calling delete twice on same obj;
+**58. Can I delete null ptr? What will happen?**
+```
+No harm. standard checks whether pointer is nullptr before calling delete. It would be better to set it to nullptr after callilng delete. try to avoid using new and delete as much as possible. avois situations of double delete occurances.
+```
+**59. What will happen on calling delete twice on same obj;**
     ```
     Base* b = new Base;
     delete b; // deletes the data pointed by b. But b points to same location.
@@ -392,40 +527,84 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
     ```
 
 60. Can we mix new[] and delete? what will happen?
+```
     > Segmentation fault. Only destructor of first object will be called.
     > If new and delete[] is mixed behaviour is unknown. free(): invalid pointer; Crash.
     > Tries to delete invalid objects.
+```
 61. Write code to pass variable arguments to function.
 62. Can I realloc memory allocated using new?
     > No.. https://isocpp.org/wiki/faq/freestore-mgmt#renew
-63. Do wee need to check against null after calling new? 
-64. In p = new Fred(); does the Fred memory “leak” if the Fred constructor throws an exception?
-    > No.. https://isocpp.org/wiki/faq/freestore-mgmt#new-doesnt-leak-if-ctor-throws
-65. Exception i Constructor or destructor ? **
-66. p = new Fred[n]; delete[] p;
+**63. Do wee need to check against null after calling new?**
+```
+No, new throws std::bad_alloc on allocation failure. Use new(std::nothrow) Car instead if you don't want exceptions.
+```
+**64. In p = new Fred(); does the Fred memory “leak” if the Fred constructor throws an exception?**
+```
+No.. 
+If an exception occurs during the Fred constructor of p = new Fred(), the C++ language guarantees that the memory sizeof(Fred) bytes that were allocated will automagically be released back to the heap.
+
+https://isocpp.org/wiki/faq/freestore-mgmt#new-doesnt-leak-if-ctor-throws
+```
+**65. Exception in Constructor or destructor ?**
+```
+Exception in constructor is detailed in 64.
+Exception in destructor leads to undefined behavior and resource leaks.
+```
+**66. p = new Fred[n]; delete[] p;
     How Compiler will know how many object to delete/destruct?
+```
+Long answer: The run-time system stores the number of objects, n, somewhere where it can be retrieved if you only know the pointer, p. There are two popular techniques that do this. Both these techniques are in use by commercial-grade compilers, both have tradeoffs, and neither is perfect. These techniques are:
+
+Over-allocate the array and put n just to the left of the first Fred object.
+Use an associative array with p as the key and n as the value.
+```
 67. How to allocate memory to multi dimentional array using new ?
-68. How to restrict an Object creation to be dynamic (using new only)?
-69. How to restrcit dynamic creation of Object?
+**68. How to restrict an Object creation to be dynamic (using new only)? => TBD
+```
+Ideally not possible. may be wrapper method or factory/singleton approach to create static objects and give to clients.
+```
+**69. How to restrcit dynamic creation of Object?
+```
+Keep new operator private.in new C++ term - maybe delete this method
+```
 70. Difference Between post increment and pre increment? Which one is efficient , why?
 71. Diff between struct and class?
 72. Can I declare private members of a struct?
 73. What are friend classes and functions, when to use them?
-74. Overloading vs. overriding ?
-
+**74. Overloading vs. overriding ?
+```
     - Overriding of functions occurs when one class is inherited from another class. Overloading can occur without inheritance.
     - Overloaded functions must differ in function signature ie either number of parameters or type of parameters should differ. 
         In overriding, function signatures must be same.
     - Overridden functions are in different scopes; whereas overloaded functions are in same scope.
     - Overriding is needed when derived class function has to do some added or different job than the base class function.
     - Overloading is used to have same name functions which behave differently depending upon parameters passed to them.
-75. can constructor be overload?
-76. can destructor be overload ?
-    > The reason why you can't overload a destructor is because your code wouldn't have a clue about which destructor it needs to call when you destroy an object.
-    > Unless you're calling destructors badly but then you're behaving badly! ;-) You can't! Each class can only have one destructor.\
-    > Its compile time error if you try to overload it.
+```
+**75. can constructor be overload?
+```
+Yes. default, parameterized constructor. Copy constructor
+```
+**76. can destructor be overload ?
+```
+> The reason why you can't overload a destructor is because your code wouldn't have a clue about which destructor it needs to call when you destroy an object.
+> Unless you're calling destructors badly but then you're behaving badly! ;-) You can't! Each class can only have one destructor.\
+> Its compile time error if you try to overload it.
+```
 77. Can i call constructor /destructor explictly  ? if so how ?
-78. what is object slicing ?
+```
+Test()  -> creates temprorary object. constructor and destructor
+Test t;
+t.~Test();
+
+Once a destructor is invoked for an object, the object no longer exists; the behavior is undefined if the destructor is invoked for an object whose lifetime has ended [Example: if the destructor for an automatic object is explicitly invoked, and the block is subsequently left in a manner that would ordinarily invoke implicit destruction of the object, the behavior is undefined.
+```
+**78. what is object slicing ?
+```
+Object slicing happens when a derived class object is assigned to a base class object, additional attributes of a derived class object are sliced off to form the base class object.
+
+It doesnt happen when pointers or refernces are used
+```
 79. initializer list ? is there any advantage of initalizer list ?
     - For initialization of non-static const data members:
     - For initialization of reference members:
@@ -433,8 +612,19 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
     - For initialization of base class members :
     - When constructor’s parameter name is same as data member
     - For Performance reasons
-80. Why Const reference is used in Copy constructor?
-81. when all the copy constructor called ?
+**80. Why Const reference is used in Copy constructor?
+**81. when all the copy constructor called ?
+```
+to avoid continuous invokation of copy constructor in infinite loop. compiler doesnt allow this.
+1) creates an obect from exisiting
+2) return an object from a function
+3) pass an object as function argument as pass by value
+4) when compiler creates temporary objects
+
+Reference has to be const to avoid "copy elision" in scenario(4) mentioned above. Compiler gives an error in this case.
+The reason for compiler error is, compiler created temporary objects cannot be bound to non-const references and the original program tries to do that. 
+It doesn’t make sense to modify compiler created temporary objects as they can die any moment.
+```
 82. can i delete this pointer in a destructor?
 83. virtual base classes ? what does it mean ?
 84. function pointers ? what's the advantage of function pointers ?
@@ -482,6 +672,167 @@ Crashes if both the shared pointer & raw pointer are destroyed. Raw pointer shou
                   Overload dereference \
                   Overload indirection operators?
     (how to overload new[] operator ?)
+```
+class Count
+// return Count when ++ used as prefix
+
+Count operator ++ () {
+    // code
+}
+
+// return Count when ++ used as postfix
+
+Count operator ++ (int) {
+   // code
+}
+```
+
+```
+    // Overload the + operator
+    Complex operator + (const Complex& obj) {
+        Complex temp;
+        temp.real = real + obj.real;
+        temp.imag = imag + obj.imag;
+        return temp;
+    }
+```
+
+```
+    void * operator new(size_t size) 
+    { 
+        cout<< "Overloading new operator with size: " << size << endl; 
+        void * p = ::new student();  
+        //void * p = malloc(size); will also work fine 
+      
+        return p; 
+    } 
+  
+    void operator delete(void * p) 
+    { 
+        cout<< "Overloading delete operator " << endl; 
+        free(p); 
+    } 
+  
+```
+
+```
+void *YourClass::operator new(size_t size)
+{
+    void *p;
+    cout << "In overloaded new.";
+    p =  malloc(size);
+    if(!p) 
+    {
+        throw std::bad_alloc;  //Throw directly than with named temp variable
+    }
+    return p;
+}
+
+void YourClass::operator delete(void *p)
+{
+    cout << "In overloaded delete.\n";
+    free(p);
+}
+
+void *YourClass::operator new[](size_t size)
+{
+    void *p;
+    cout << "Using overload new[].\n";
+    p =  malloc(size);
+    if(!p) 
+    {
+        throw std::bad_alloc;
+    }
+    return p;
+}
+
+void YourClass::operator delete[](void *p)
+{
+    cout << "Free array using overloaded delete[]\n";
+    free(p);
+}
+```
+
+```
+int& IntList::operator[] (int index) // for non-const objects: can be used for assignment
+{
+    return m_list[index];
+}
+ 
+const int& IntList::operator[] (int index) const // for const objects: can only be used for access
+{
+    return m_list[index];
+}
+```
+
+```
+template<class T>
+class MyClass
+{
+    T* ptr;
+
+public:
+    T* operator->() {
+        return ptr;
+    }
+
+    // const version, returns a pointer-to-const instead of just a pointer to
+    // enforce the idea of the logical constness of this object 
+    const T* operator->() const {
+        return ptr;
+    }
+
+    T& operator*() {
+        return *ptr;
+    }
+
+    // const version, returns a const reference instead of just a reference
+    // to enforce the idea of the logical constness of this object
+    const T& operator*() const {
+        return *ptr;
+    }
+};
+```
+
+```
+For example,
+
+class Person{
+        string name;
+    public:
+        T& operator*(){
+            return name;
+        }
+}
+
+You need an object of the class rather than the pointer to class object to invoke the overloaded * operator.
+
+Person *ptr = new Person;
+Person p1 = *ptr;   // does not invoke * operator but returns the object pointed by ptr
+string str = *p1 // invokes the overloaded operator as it is called on an object.
+
+```
+
+```
+If defined inside a class -> class scope
+if defined outside -> impacts whole program. overloads global new. which in turn is used by STL's etc
+
+    void * operator new(size_t size) 
+    { 
+        cout<< "Overloading new operator with size: " << size << endl; 
+        void * p = ::new student();  
+        //void * p = malloc(size); will also work fine 
+      
+        return p; 
+    } 
+  
+    void operator delete(void * p) 
+    { 
+        cout<< "Overloading delete operator " << endl; 
+        free(p); 
+    } 
+```
+
 114. Implement your own Iterator?
 115. how to delete array of objects / pointers ?
 116. What will be the output? What do you do when it crashes? How do you debug?
