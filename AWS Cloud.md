@@ -8,4 +8,3 @@
 3. Availability of services: Not all regions wil have all the AWS services.
 4. Pricing
 
-![Screenshot (9)](https://user-images.githubusercontent.com/22328324/136532693-f420d397-5d9e-439e-96fa-9a296443395b.png)
