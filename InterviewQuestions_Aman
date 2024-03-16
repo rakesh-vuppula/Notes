@@ -1,0 +1,124 @@
+1. Storage Classes in C and C++?
+2. Difference between C and C++
+3. What is Deep copy?
+4. Conditions for Deadlock to occur?
+5. What is double check locking?
+6. Difference between semaphore and mutex?
+7. What are inline functions?
+8. Can inline function be recursive?
+9. Types of polymorphism?
+10. what are joins in SQL?
+11. Do you know triggers ?
+12. Map uses internally which data structure?
+13. Difference between Vectors and Array?
+14. Which design patters you used in your projects?
+15. Explain the multi-threading scenario faced by you and how did you handle that?
+16. One building has 8 floor and two elevators. Design the classes which would interact for effective functioning of elevators.
+17. Constructor calling sequence in inheritance?
+18. If you provide the parameterized constructor? do compiler provides the default constructor?
+19. Do you know the how vectors are internally implemented?
+20.  Is it really necessary to deallocate the dynamically allocated memory?
+21. What are smart pointers?
+22. Difference between calloc, malloc, realloc?
+23.  Difference between inline and macros?
+24. What are the three pillars of Oops?
+25. What are conversion constructors?
+26. What is the use of extern ?
+27. Why volatile is used?
+28. Difference between uinque lock, shared lock and lock_guard?
+29. What is segmentation fault?
+30. Do you know virtual memory?
+31. three switches outside the room having 3 bulbs, you are allowed to enter only once. how do you identify which button is linked to which bulb?
+32. Do you know the Dependency inversion principle?
+33. What is object slicing?
+34. Explain the diamond problem?
+35. Which database you worked on ?
+36.  new vs malloc -- https://www.geeksforgeeks.org/malloc-vs-new/
+37. calloc vs malloc vs realloc -- https://www.geeksforgeeks.org/dynamic-memory-allocation-in-c-using-malloc-calloc-free-and-realloc/
+
+38. 	What is the output ?
+	
+	class Base
+	{
+	  public:
+		Base(){cout<<"constructor"<<endl;}
+		~Base(){cout<<"destructor"<<endl;}
+		virtual void dummy(){}
+		void* operator new(size_t nbytes)
+		{
+			cout<<"new operator"<<endl;
+			return malloc(nbytes);
+		}
+		void operator delete(void* ptr)
+		{
+			cout<<"delete operator"<<endl;
+			free(ptr);
+		}
+	};
+	class Derived : public Base
+	{
+	  public:
+		Derived(){cout<<"Derived constructor"<<endl;}
+		~Derived(){cout<<"v destructor"<<endl;}
+		virtual void dummy() override{}
+		void* operator new(size_t nbytes)
+		{
+			cout<<"Derived new operator"<<endl;
+			return malloc(nbytes);
+		}
+		void operator delete(void* ptr)
+		{
+			cout<<"Derived delete operator"<<endl;
+			free(ptr);
+		}
+	};
+	int main()
+	{
+		Base* b = new Base;
+		delete b;
+		
+		Base* b = new Derived;
+		delete b;
+		return 0;
+	}
+39. Have you worked on multi-threaded application?
+40. What is the difference between semaphore and mutex?
+41. Do you LRU ? What data structure would you use to internally create LRU?
+42.  What is auto PtR?
+43. What does reset do?
+44. What are STL?
+45. Stack Unwinding ? What is it?
+46. Do you know different program section? Explain them
+47. Virtual table gets created at Compile time or Runtime?
+48. Explain the Fascade Design Pattern
+49. What are different types of inheritance?
+50. Do you know difference between memory leaks and segmentation fault?
+51. what is difference between constant pointer and --?
+52 What is deadlock?
+53. What is paging?
+54. Explain virtual memory?
+55. If you have vector of custom objects ? How would you sort that?
+56. If you copy that custom objects vector to another vector? Is cleaning that vector would also clean other vector?
+57. How would you clean the custom objects vector?
+58. What is the difference between Abstract Factory and Factory?
+59. Do you know the difference between mutex and binary semaphore?
+60.  What is the type of inheritance in the diamond problem?
+61. What is the difference between local static and global static?
+62. Difference between push_back and emplace_back?
+63. What do you understand by virtual inheritance?
+64.  Explain the internal working of virtual functions?
+65. How you create stub in GTest?
+66. Difference between ordered and unordered map?
+67. What is template instantiation?
+68. Difference between Structure in C and Structure in C++?
+69.  Difference between macro and inline?
+70. Difference between functors and lambda?
+71. What are the different sections in memory? Map the program for addition of two numbers in memory?
+72. Write a program to find the loop in linked list?
+73. Given the number, find out the pair of elements in array which would give the sum as the  number provided
+74. What is static const usage?
+75. Necessary conditions for deadlock to occur?
+76. Design Whats app
+77.  Program for transpose of matrix?
+78.  Use cases of std::move ?
+
